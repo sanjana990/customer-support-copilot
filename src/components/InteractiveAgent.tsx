@@ -1,15 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Brain, ExternalLink, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { useToast } from '@/hooks/use-toast';
 import { apiService } from '@/lib/api';
 import { QueryResponse } from '@/types/api';
-import { useToast } from '@/hooks/use-toast';
+import { Bot, Brain, CheckCircle, ExternalLink, Loader2, Send, Trash2, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Message {
   id: string;
@@ -17,7 +14,6 @@ interface Message {
   content: string;
   timestamp: Date;
   response?: QueryResponse;
-  showAnalysis?: boolean;
 }
 
 interface InteractiveAgentProps {
@@ -74,7 +70,6 @@ export function InteractiveAgent({ sessionId, onClearSession }: InteractiveAgent
         content: response.answer,
         timestamp: new Date(),
         response,
-        showAnalysis: false,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -87,14 +82,6 @@ export function InteractiveAgent({ sessionId, onClearSession }: InteractiveAgent
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const toggleAnalysis = (messageId: string) => {
-    setMessages(prev => prev.map(msg => 
-      msg.id === messageId 
-        ? { ...msg, showAnalysis: !msg.showAnalysis }
-        : msg
-    ));
   };
 
   const clearConversation = async () => {
@@ -115,149 +102,119 @@ export function InteractiveAgent({ sessionId, onClearSession }: InteractiveAgent
     }
   };
 
-  const getTopicColor = (topic: string) => {
-    const colors = {
-      'API/SDK': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-      'How-to': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-      'Connector': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-      'SSO': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-      'Product': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    };
-    return colors[topic as keyof typeof colors] || colors['Product'];
-  };
-
-  const getSentimentColor = (sentiment: string) => {
-    const colors = {
-      'Urgent': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-      'Frustrated': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-      'Positive': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-      'Curious': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-      'Neutral': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    };
-    return colors[sentiment as keyof typeof colors] || colors['Neutral'];
-  };
-
-  const getPriorityColor = (priority: string) => {
-    const colors = {
-      'P0': 'bg-red-100 text-red-800 border-red-200',
-      'P1': 'bg-orange-100 text-orange-800 border-orange-200',
-      'P2': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    };
-    return colors[priority as keyof typeof colors] || colors['P2'];
-  };
-
   return (
-    <div className="flex flex-col h-[600px]">
-      <div className="flex items-center justify-between p-4 border-b border-dashboard-border">
+    <div className="flex flex-col h-[700px] max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 border-b border-gray-200">
         <div>
-          <h2 className="text-xl font-semibold">Interactive AI Agent</h2>
-          <p className="text-sm text-muted-foreground">
-            Chat with AI and see classification analysis in real-time
+          <h2 className="text-2xl font-semibold text-gray-900">Interactive AI Agent</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Chat with AI and get ticket analysis with follow-up suggestions
           </p>
         </div>
         <Button
           variant="outline"
           size="sm"
           onClick={clearConversation}
-          className="text-danger hover:bg-danger/10"
+          className="text-red-600 hover:bg-red-50 border-red-200"
         >
           <Trash2 className="w-4 h-4 mr-2" />
           Clear Chat
         </Button>
       </div>
 
-      <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea ref={scrollAreaRef} className="flex-1 p-6">
+        <div className="space-y-6">
           {messages.length === 0 ? (
-            <div className="text-center text-muted-foreground py-8">
-              <Bot className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>Start a conversation with the AI agent</p>
-              <p className="text-sm">Ask any question about your product or service</p>
+            <div className="text-center text-gray-500 py-12">
+              <Bot className="w-16 h-16 mx-auto mb-4 opacity-40" />
+              <p className="text-lg mb-2">Start a conversation with the AI agent</p>
+              <p className="text-sm">Ask any question about your tickets or product issues</p>
             </div>
           ) : (
             messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`flex gap-3 max-w-[80%] ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <div className={`p-2 rounded-lg ${message.type === 'user' ? 'bg-brand-primary text-white' : 'bg-muted'}`}>
-                    {message.type === 'user' ? (
-                      <User className="w-5 h-5" />
-                    ) : (
-                      <Bot className="w-5 h-5" />
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2 flex-1">
-                    <Card className={`p-3 ${message.type === 'user' ? 'bg-brand-primary text-white' : 'bg-card'}`}>
+              <div key={message.id} className="space-y-4">
+                {message.type === 'user' && (
+                  <div className="flex justify-end">
+                    <Card className="bg-blue-600 text-white p-4 max-w-[80%] rounded-lg">
                       <p className="text-sm leading-relaxed">{message.content}</p>
                     </Card>
-                    
-                    {message.type === 'assistant' && message.response && (
-                      <div className="space-y-2">
-                        {/* Classification badges */}
-                        <div className="flex flex-wrap gap-2">
-                          <Badge className={getPriorityColor(message.response.classification.priority)}>
-                            {message.response.classification.priority}
-                          </Badge>
-                          <Badge variant="outline" className={getTopicColor(message.response.classification.topic)}>
+                  </div>
+                )}
+                
+                {message.type === 'assistant' && message.response && (
+                  <div className="space-y-6">
+                    {/* Analysis Section */}
+                    <Card className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                      <div className="flex items-center gap-2 mb-4">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <h3 className="text-lg font-semibold text-gray-900">Analysis</h3>
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                          <p className="text-sm text-gray-600 mb-1">Topic:</p>
+                          <p className="text-lg font-semibold text-gray-900">
                             {message.response.classification.topic}
-                          </Badge>
-                          <Badge variant="outline" className={getSentimentColor(message.response.classification.sentiment)}>
-                            {message.response.classification.sentiment}
-                          </Badge>
+                          </p>
                         </div>
+                        
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                          <p className="text-sm text-gray-600 mb-1">Sentiment:</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {message.response.classification.sentiment}
+                          </p>
+                        </div>
+                        
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                          <p className="text-sm text-gray-600 mb-1">Priority:</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {message.response.classification.priority}
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
 
-                        {/* Internal Analysis Toggle */}
-                        <Collapsible
-                          open={message.showAnalysis}
-                          onOpenChange={() => toggleAnalysis(message.id)}
-                        >
-                          <CollapsibleTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-brand-primary hover:bg-brand-primary/10 p-1 h-auto"
-                            >
-                              <Brain className="w-4 h-4 mr-1" />
-                              {message.showAnalysis ? 'Hide' : 'Show'} Internal Analysis
+                    {/* AI Response Section */}
+                    <Card className="bg-white border border-gray-200 rounded-lg shadow-sm">
+                      <div className="p-4 border-b border-gray-200">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Bot className="w-5 h-5 text-gray-600" />
+                            <h3 className="text-lg font-semibold text-gray-900">AI Response (Web Chat)</h3>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-600">
+                              <X className="w-4 h-4" />
+                              Close
                             </Button>
-                          </CollapsibleTrigger>
-                          
-                          <CollapsibleContent>
-                            <Card className="p-3 mt-2 bg-muted/50">
-                              <div className="space-y-3">
-                                <div>
-                                  <p className="text-xs font-medium text-muted-foreground mb-1">Topic Analysis</p>
-                                  <p className="text-sm">{message.response.classification_reasons.topic}</p>
-                                </div>
-                                <Separator />
-                                <div>
-                                  <p className="text-xs font-medium text-muted-foreground mb-1">Sentiment Analysis</p>
-                                  <p className="text-sm">{message.response.classification_reasons.sentiment}</p>
-                                </div>
-                                <Separator />
-                                <div>
-                                  <p className="text-xs font-medium text-muted-foreground mb-1">Priority Analysis</p>
-                                  <p className="text-sm">{message.response.classification_reasons.priority}</p>
-                                </div>
-                              </div>
-                            </Card>
-                          </CollapsibleContent>
-                        </Collapsible>
-
+                            <div className="flex items-center gap-1 text-sm text-gray-500">
+                              <CheckCircle className="w-4 h-4 text-orange-500" />
+                              Cached
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {(message.response.processing_time / 1000).toFixed(2)}s
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-6">
+                        <p className="text-gray-800 leading-relaxed whitespace-pre-line">
+                          {message.response.answer}
+                        </p>
+                        
                         {/* Citations */}
                         {message.response.citations.length > 0 && (
-                          <Card className="p-3 bg-muted/30">
-                            <p className="text-xs font-medium text-muted-foreground mb-2">Sources</p>
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <p className="text-sm font-medium text-gray-600 mb-2">Sources:</p>
                             <div className="space-y-1">
                               {message.response.citations.map((citation, index) => (
                                 <Button
                                   key={index}
                                   variant="ghost"
                                   size="sm"
-                                  className="justify-start h-auto p-1 text-xs"
+                                  className="justify-start h-auto p-1 text-xs text-blue-600 hover:text-blue-800"
                                   asChild
                                 >
                                   <a href={citation.url} target="_blank" rel="noopener noreferrer">
@@ -267,48 +224,73 @@ export function InteractiveAgent({ sessionId, onClearSession }: InteractiveAgent
                                 </Button>
                               ))}
                             </div>
-                          </Card>
+                          </div>
                         )}
                       </div>
+                    </Card>
+
+                    {/* Follow-up Questions */}
+                    {message.response.followup_suggestions.length > 0 && (
+                      <Card className="p-6 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Brain className="w-5 h-5 text-green-600" />
+                          <h3 className="text-lg font-semibold text-gray-900">Suggested Follow-up Questions</h3>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          {message.response.followup_suggestions.map((suggestion, index) => (
+                            <div key={index} className="flex items-start gap-3">
+                              <div className="w-6 h-6 rounded-full bg-green-600 text-white text-sm font-medium flex items-center justify-center flex-shrink-0">
+                                {index + 1}
+                              </div>
+                              <Button
+                                variant="ghost"
+                                className="text-left h-auto p-0 text-gray-800 hover:text-green-600 font-normal"
+                                onClick={() => {
+                                  setInput(suggestion.question);
+                                }}
+                              >
+                                {suggestion.question}
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </Card>
                     )}
-                    
-                    <p className="text-xs text-muted-foreground">
-                      {message.timestamp.toLocaleTimeString()}
-                    </p>
                   </div>
-                </div>
+                )}
               </div>
             ))
           )}
           
           {isLoading && (
-            <div className="flex justify-start">
-              <div className="flex gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <Bot className="w-5 h-5" />
+            <div className="flex justify-center">
+              <Card className="p-6 bg-white border border-gray-200 rounded-lg">
+                <div className="flex items-center gap-3 text-gray-600">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>AI is analyzing your message...</span>
                 </div>
-                <Card className="p-3 bg-card">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    AI is thinking...
-                  </div>
-                </Card>
-              </div>
+              </Card>
             </div>
           )}
         </div>
       </ScrollArea>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t border-dashboard-border">
-        <div className="flex gap-2">
+      {/* Input Form */}
+      <form onSubmit={handleSubmit} className="p-6 border-t border-gray-200 bg-gray-50">
+        <div className="flex gap-3">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a question..."
+            placeholder="Ask a question about your tickets..."
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           />
-          <Button type="submit" disabled={isLoading || !input.trim()}>
+          <Button 
+            type="submit" 
+            disabled={isLoading || !input.trim()}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+          >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (

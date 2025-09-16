@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, Eye, Clock, ExternalLink, Brain, MessageSquare, AlertTriangle, CheckSquare2, BarChart3 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
-import { TicketData, TopicType, SentimentType, PriorityType } from '@/types/api';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Progress } from '@/components/ui/progress';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { PriorityType, SentimentType, TicketData, TopicType } from '@/types/api';
+import { AlertTriangle, BarChart3, Brain, CheckSquare2, ChevronDown, ChevronUp, Clock, ExternalLink, Eye, Info, MessageSquare } from 'lucide-react';
+import { useState } from 'react';
 
 // Mock data for demonstration
 const mockTickets: TicketData[] = [
@@ -173,6 +175,115 @@ function getPriorityColor(priority: string) {
     'P2': 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950 dark:text-yellow-300 dark:border-yellow-800',
   };
   return colors[priority as keyof typeof colors] || colors['P2'];
+}
+
+interface ClassificationDetailsProps {
+  ticket: TicketData;
+}
+
+function ClassificationDetails({ ticket }: ClassificationDetailsProps) {
+  const confidencePercentage = Math.round(ticket.classification.confidence * 100);
+  
+  return (
+    <div className="space-y-6">
+      {/* Header with confidence */}
+      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+        <div className="flex items-center gap-3">
+          <Brain className="w-5 h-5 text-blue-600" />
+          <div>
+            <h3 className="font-semibold text-gray-900">AI Classification Analysis</h3>
+            <p className="text-sm text-gray-600">Ticket {ticket.id}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-bold text-blue-600">{confidencePercentage}%</div>
+          <div className="text-xs text-gray-500">Confidence</div>
+        </div>
+      </div>
+
+      {/* Confidence Progress Bar */}
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Classification Confidence</span>
+          <span className="font-medium">{confidencePercentage}%</span>
+        </div>
+        <Progress value={confidencePercentage} className="h-2" />
+        <div className="text-xs text-gray-500">
+          {confidencePercentage >= 90 ? 'Very High Confidence' : 
+           confidencePercentage >= 75 ? 'High Confidence' : 
+           confidencePercentage >= 60 ? 'Medium Confidence' : 'Low Confidence'}
+        </div>
+      </div>
+
+      {/* Current Classifications */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="text-center p-3 bg-white border rounded-lg">
+          <div className="text-sm text-gray-600 mb-1">Topic</div>
+          <Badge variant="outline" className={`text-xs ${getTopicColor(ticket.classification.topic)}`}>
+            {ticket.classification.topic}
+          </Badge>
+        </div>
+        <div className="text-center p-3 bg-white border rounded-lg">
+          <div className="text-sm text-gray-600 mb-1">Sentiment</div>
+          <Badge variant="outline" className={`text-xs ${getSentimentColor(ticket.classification.sentiment)}`}>
+            {ticket.classification.sentiment}
+          </Badge>
+        </div>
+        <div className="text-center p-3 bg-white border rounded-lg">
+          <div className="text-sm text-gray-600 mb-1">Priority</div>
+          <Badge className={`text-xs ${getPriorityColor(ticket.classification.priority)}`}>
+            {ticket.classification.priority}
+          </Badge>
+        </div>
+      </div>
+
+      {/* Classification Reasoning */}
+      <div className="space-y-4">
+        <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+          <Info className="w-4 h-4" />
+          AI Reasoning
+        </h4>
+        
+        <div className="space-y-4">
+          <Card className="p-4 border-l-4 border-l-blue-500">
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+              <div className="flex-1">
+                <p className="font-medium text-sm text-gray-900 mb-1">Topic Classification</p>
+                <p className="text-sm text-gray-700">{ticket.classification_reasons.topic}</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4 border-l-4 border-l-green-500">
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+              <div className="flex-1">
+                <p className="font-medium text-sm text-gray-900 mb-1">Sentiment Analysis</p>
+                <p className="text-sm text-gray-700">{ticket.classification_reasons.sentiment}</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4 border-l-4 border-l-orange-500">
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+              <div className="flex-1">
+                <p className="font-medium text-sm text-gray-900 mb-1">Priority Assessment</p>
+                <p className="text-sm text-gray-700">{ticket.classification_reasons.priority}</p>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {/* Processing Info */}
+      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg text-sm">
+        <span className="text-gray-600">Processing Time:</span>
+        <span className="font-medium">{ticket.processing_time.toFixed(2)}s</span>
+      </div>
+    </div>
+  );
 }
 
 function SummaryCards({ tickets }: { tickets: TicketData[] }) {
@@ -421,23 +532,44 @@ export function BulkDashboard() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleExpanded(ticket.id);
-                        }}
-                        className="text-primary"
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        View
-                        {expandedRows.has(ticket.id) ? (
-                          <ChevronUp className="w-4 h-4 ml-1" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 ml-1" />
-                        )}
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        {/* Classification Details Eye Icon */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-1 h-8 w-8"
+                              title="View Classification Details"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>Classification Analysis</DialogTitle>
+                            </DialogHeader>
+                            <ClassificationDetails ticket={ticket} />
+                          </DialogContent>
+                        </Dialog>
+
+                        {/* Existing View/Expand Button */}
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleExpanded(ticket.id);
+                          }}
+                          className="text-primary p-1 h-8"
+                        >
+                          {expandedRows.has(ticket.id) ? (
+                            <ChevronUp className="w-4 h-4" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                   
