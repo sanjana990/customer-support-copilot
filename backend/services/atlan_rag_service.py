@@ -1,13 +1,13 @@
 import openai
 from typing import List, Dict
-from services.atlan_rag_crawler import rag_crawler
+from services.atlan_rag_crawler import atlan_rag_crawler
 from config.settings import OPENAI_API_KEY
 
 openai.api_key = OPENAI_API_KEY
 
 class AtlanRAGService:
     def __init__(self):
-        self.crawler = rag_crawler
+        self.crawler = atlan_rag_crawler
     
     async def generate_rag_response(self, query: str, top_k: int = 5) -> Dict:
         """Generate RAG response using crawled content from Pinecone"""
@@ -34,7 +34,7 @@ class AtlanRAGService:
             sources = []
             seen_urls = set()  # Track unique URLs
             
-            print(f"🔍 Processing {len(search_results)} search results for deduplication...")
+            print(f"�� Processing {len(search_results)} search results for deduplication...")
             
             for i, result in enumerate(search_results):
                 content = result.metadata.get("content", "")
