@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { apiService } from '@/lib/api';
 import { QueryResponse } from '@/types/api';
@@ -88,8 +89,18 @@ function CopyButton({ text }: { text: string }) {
 export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSession }: InteractiveAgentProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState('Web Chat');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  const channelOptions = [
+    { value: 'Web Chat', label: 'Web Chat' },
+    { value: 'WhatsApp', label: 'WhatsApp' },
+    { value: 'Email', label: 'Email' },
+    { value: 'Voice', label: 'Voice' },
+    { value: 'Slack', label: 'Slack' },
+    { value: 'Teams', label: 'Microsoft Teams' },
+  ];
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -133,7 +144,7 @@ export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSes
       const response = await apiService.submitQuery({
         query: userMessage.content,
         session_id: sessionId,
-        channel: 'Web Chat',
+        channel: selectedChannel,
         include_followup: true,
       });
 
@@ -148,16 +159,16 @@ export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSes
       onAddMessage(assistantMessage);
     } catch (error) {
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to send message',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to get response from AI agent. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFollowup = async (question: string) => {
+  const handleFollowupClick = async (question: string) => {
     if (isLoading) return;
 
     const userMessage: Message = {
@@ -174,7 +185,7 @@ export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSes
       const response = await apiService.submitFollowupQuery({
         query: question,
         session_id: sessionId,
-        channel: 'Web Chat',
+        channel: selectedChannel,
         include_followup: true,
       });
 
@@ -189,9 +200,9 @@ export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSes
       onAddMessage(assistantMessage);
     } catch (error) {
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to send follow-up',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to get response from AI agent. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -222,6 +233,31 @@ export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSes
         </Button>
       </div>
 
+      {/* Channel Selector */}
+      <div className="p-4 border-b border-gray-200 bg-white">
+        <div className="flex items-center gap-3">
+          <label htmlFor="channel-select" className="text-sm font-medium text-gray-700">
+            Channel:
+          </label>
+          <Select value={selectedChannel} onValueChange={setSelectedChannel}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Select channel" />
+            </SelectTrigger>
+            <SelectContent>
+              {channelOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex items-center gap-1 text-xs text-gray-500">
+            <Info className="w-3 h-3" />
+            <span>Selected channel will be used for ticket classification</span>
+          </div>
+        </div>
+      </div>
+
       {/* Messages */}
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 space-y-4">
         {messages.length === 0 ? (
@@ -229,6 +265,7 @@ export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSes
             <MessageSquare className="w-12 h-12 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Start a conversation</h3>
             <p className="text-gray-600">Ask me anything about Atlan or submit a support ticket</p>
+            <p className="text-sm text-gray-500 mt-2">Current channel: <span className="font-medium">{selectedChannel}</span></p>
           </div>
         ) : (
           messages.map((message) => (
@@ -299,62 +336,53 @@ export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSes
                               className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
                             >
                               <ExternalLink className="w-3 h-3" />
-                              {citation.doc}
+                              <span className="truncate">{citation.doc}</span>
                             </a>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Analysis */}
-                    <div className="border-t pt-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Brain className="w-4 h-4 text-blue-600" />
-                        <h4 className="text-sm font-medium text-gray-900">Analysis</h4>
+                    {/* Classification */}
+                    <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                      <h4 className="text-sm font-medium text-gray-900 mb-2">Classification:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge className={getTopicColor(message.response.classification.topic)}>
+                          Topic: {message.response.classification.topic}
+                        </Badge>
+                        <Badge className={getSentimentColor(message.response.classification.sentiment)}>
+                          Sentiment: {message.response.classification.sentiment}
+                        </Badge>
+                        <Badge className={getPriorityColor(message.response.classification.priority)}>
+                          Priority: {message.response.classification.priority}
+                        </Badge>
+                        <Badge variant="outline">
+                          Confidence: {(message.response.classification.confidence * 100).toFixed(1)}%
+                        </Badge>
                       </div>
-                      
-                      <div className="grid grid-cols-3 gap-3 mb-4">
-                        <div className="text-center p-2 bg-gray-50 rounded">
-                          <div className="text-xs text-gray-600 mb-1">Topic</div>
-                          <Badge variant="outline" className={`text-xs ${getTopicColor(message.response.classification.topic)}`}>
-                            {message.response.classification.topic}
-                          </Badge>
-                        </div>
-                        <div className="text-center p-2 bg-gray-50 rounded">
-                          <div className="text-xs text-gray-600 mb-1">Sentiment</div>
-                          <Badge variant="outline" className={`text-xs ${getSentimentColor(message.response.classification.sentiment)}`}>
-                            {message.response.classification.sentiment}
-                          </Badge>
-                        </div>
-                        <div className="text-center p-2 bg-gray-50 rounded">
-                          <div className="text-xs text-gray-600 mb-1">Priority</div>
-                          <Badge className={`text-xs ${getPriorityColor(message.response.classification.priority)}`}>
-                            {message.response.classification.priority}
-                          </Badge>
-                        </div>
-                      </div>
-
-                      {/* Follow-up Questions */}
-                      {message.response.followup_suggestions && message.response.followup_suggestions.length > 0 && (
-                        <div className="mt-4">
-                          <h5 className="text-sm font-medium text-gray-900 mb-2">Follow-up Questions:</h5>
-                          <div className="space-y-2">
-                            {message.response.followup_suggestions.map((suggestion, index) => (
-                              <Button
-                                key={index}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleFollowup(suggestion.question)}
-                                className="w-full justify-start text-left h-auto p-3 hover:bg-gray-50 hover:text-gray-900"
-                              >
-                                <ArrowRight className="w-3 h-3 mr-2 flex-shrink-0" />
-                                <span className="text-sm">{suggestion.question}</span>
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
+
+                    {/* Follow-up Suggestions */}
+                    {message.response.followup_suggestions && message.response.followup_suggestions.length > 0 && (
+                      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <h4 className="text-sm font-medium text-blue-900 mb-2">Suggested Follow-ups:</h4>
+                        <div className="space-y-2">
+                          {message.response.followup_suggestions.map((suggestion, index) => (
+                            <Button
+                              key={index}
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleFollowupClick(suggestion.question)}
+                              className="w-full justify-start text-left h-auto p-2 hover:bg-blue-100"
+                              disabled={isLoading}
+                            >
+                              <ArrowRight className="w-3 h-3 mr-2 flex-shrink-0" />
+                              <span className="text-sm">{suggestion.question}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <p className="text-sm">{message.content}</p>
@@ -390,6 +418,9 @@ export function InteractiveAgent({ sessionId, messages, onAddMessage, onClearSes
             <Send className="w-4 h-4" />
           </Button>
         </form>
+        <div className="mt-2 text-xs text-gray-500">
+          Messages will be sent via: <span className="font-medium">{selectedChannel}</span>
+        </div>
       </div>
     </div>
   );
