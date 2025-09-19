@@ -46,3 +46,4 @@ async def initialize_data():
     logger.info("🔧 Initializing data...")
     from controllers.tickets_controller import classify_tickets
     return await classify_tickets()
+# Force deployment update
