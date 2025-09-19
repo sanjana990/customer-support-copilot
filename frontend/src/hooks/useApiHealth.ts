@@ -12,7 +12,7 @@ export function useApiHealth() {
     setError(null);
     
     try {
-      const response = await apiService.healthCheck();
+      const response = await apiService.getHealth();
       setHealth(response);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Health check failed');

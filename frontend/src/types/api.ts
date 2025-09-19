@@ -38,6 +38,7 @@ export interface QueryResponse {
   cache_hit: boolean;
   followup_suggestions: FollowupSuggestion[];
   session_id: string;
+  response_type: "rag_response" | "routing_message";
 }
 
 export interface ConversationMessage {
@@ -66,7 +67,7 @@ export interface ApiError {
   detail: string;
 }
 
-export type TopicType = "API/SDK" | "How-to" | "Connector" | "SSO" | "Product";
+export type TopicType = "How-to" | "Product" | "Connector" | "Lineage" | "API/SDK" | "SSO" | "Glossary" | "Best practices" | "Sensitive data" | "General";
 export type SentimentType = "Urgent" | "Frustrated" | "Positive" | "Curious" | "Neutral";
 export type PriorityType = "P0" | "P1" | "P2";
 
