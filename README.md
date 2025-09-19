@@ -53,6 +53,60 @@ An intelligent AI-powered customer support system that provides automated ticket
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
+## 🎯 Major Design Decisions and Trade-offs
+
+### **AI Pipeline Design Decisions**
+
+#### **1. RAG (Retrieval Augmented Generation) Approach**
+- **Decision**: Implemented RAG instead of fine-tuning a model
+- **Rationale**: RAG allows for real-time updates to documentation without retraining
+- **Trade-off**: Slightly higher latency but better accuracy and maintainability
+- **Benefit**: Can easily update knowledge base by re-crawling documentation
+
+#### **2. Vector Database Choice: Pinecone**
+- **Decision**: Used Pinecone over alternatives like Chroma or FAISS
+- **Rationale**: Managed service with excellent performance and scalability
+- **Trade-off**: Higher cost but better reliability and performance
+- **Benefit**: No infrastructure management, automatic scaling
+
+#### **3. Embedding Model: OpenAI text-embedding-ada-002**
+- **Decision**: Used OpenAI embeddings over open-source alternatives
+- **Rationale**: Superior quality for technical documentation
+- **Trade-off**: API costs but better semantic understanding
+- **Benefit**: Better retrieval accuracy for technical content
+
+#### **4. Classification Strategy: GPT-3.5-turbo**
+- **Decision**: Used GPT-3.5-turbo for classification instead of specialized models
+- **Rationale**: General-purpose model with good reasoning capabilities
+- **Trade-off**: Higher cost per request but better flexibility
+- **Benefit**: Can handle diverse ticket types without retraining
+
+#### **5. Content Extraction Strategy**
+- **Decision**: Implemented improved crawlers with full content extraction
+- **Rationale**: Better response quality with complete code examples
+- **Trade-off**: Larger storage requirements but better user experience
+- **Benefit**: Users get comprehensive answers with working code snippets
+
+### **System Architecture Trade-offs**
+
+#### **1. Frontend Framework: React + Vite**
+- **Decision**: React over Vue.js or Angular
+- **Rationale**: Better ecosystem for AI applications and component libraries
+- **Trade-off**: Larger bundle size but better developer experience
+- **Benefit**: Rich ecosystem, excellent TypeScript support
+
+#### **2. Backend Framework: FastAPI**
+- **Decision**: FastAPI over Flask or Django
+- **Rationale**: Better performance, automatic API documentation, async support
+- **Trade-off**: Learning curve but better scalability
+- **Benefit**: Built-in validation, automatic OpenAPI docs, async capabilities
+
+#### **3. Database Strategy: Vector + JSON**
+- **Decision**: Pinecone for vectors, JSON files for metadata
+- **Rationale**: Optimized for each use case
+- **Trade-off**: Multiple data stores but better performance
+- **Benefit**: Fast vector search + flexible metadata storage
+
 ## 📁 Project Structure
 
 ```
@@ -340,7 +394,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Documentation**: Check `API_DOCUMENTATION.md` for detailed API specs
 - **Team Contact**: Reach out to the development team
 
-## �� Getting Started Checklist
+## 🚀 Getting Started Checklist
 
 - [ ] Clone the repository
 - [ ] Set up environment variables (OpenAI, Pinecone)
