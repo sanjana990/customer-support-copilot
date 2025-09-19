@@ -1,13 +1,13 @@
-from pinecone import Pinecone
+import pinecone
 from config.settings import PINECONE_API_KEY, PINECONE_TICKETS_INDEX, PINECONE_DOCS_INDEX
 from services.embedding_service import generate_embedding
 
 # Initialize Pinecone client
-pc = Pinecone(api_key=PINECONE_API_KEY)
+pinecone.init(api_key=PINECONE_API_KEY)
 
 # Initialize indexes
-tickets_index = pc.Index(PINECONE_TICKETS_INDEX)
-docs_index = pc.Index(PINECONE_DOCS_INDEX)
+tickets_index = pinecone.Index(PINECONE_TICKETS_INDEX)
+docs_index = pinecone.Index(PINECONE_DOCS_INDEX)
 
 async def upsert_to_vector_db(index_name: str, id: str, embedding: list, metadata: dict):
     index = tickets_index if index_name == "tickets" else docs_index
