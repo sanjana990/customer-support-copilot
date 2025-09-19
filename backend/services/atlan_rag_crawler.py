@@ -1,8 +1,8 @@
-import pinecone
+from pinecone import Pinecone
 import openai
 import requests
 from bs4 import BeautifulSoup
-from config.settings import OPENAI_API_KEY, PINECONE_API_KEY, PINECONE_ENVIRONMENT, PINECONE_DOCS_INDEX
+from config.settings import OPENAI_API_KEY, PINECONE_API_KEY, PINECONE_DOCS_INDEX
 import time
 import json
 import re
@@ -11,7 +11,7 @@ import re
 openai.api_key = OPENAI_API_KEY
 
 # Initialize Pinecone
-pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+pc = Pinecone(api_key=PINECONE_API_KEY)
 
 class AtlanRAGCrawler:
     def __init__(self):
@@ -22,9 +22,9 @@ class AtlanRAGCrawler:
         """Setup Pinecone index for storing crawled content"""
         try:
             # Check if index exists
-            if PINECONE_DOCS_INDEX not in pinecone.list_indexes():
+            if PINECONE_DOCS_INDEX not in pc.list_indexes().names():
                 # Create index if it doesn't exist
-                pinecone.create_index(
+                pc.create_index(
                     name=PINECONE_DOCS_INDEX,
                     dimension=1536,  # OpenAI embedding dimension
                     metric="cosine"
@@ -32,7 +32,7 @@ class AtlanRAGCrawler:
                 print(f"Created Pinecone index: {PINECONE_DOCS_INDEX}")
             
             # Connect to index
-            self.index = pinecone.Index(PINECONE_DOCS_INDEX)
+            self.index = pc.Index(PINECONE_DOCS_INDEX)
             print(f"Connected to Pinecone index: {PINECONE_DOCS_INDEX}")
             
         except Exception as e:
