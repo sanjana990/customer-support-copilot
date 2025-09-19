@@ -1,234 +1,205 @@
 # 🚀 Atlan Customer Support Copilot
 
-An intelligent AI-powered customer support system that provides automated ticket classification, intelligent document retrieval, and contextual responses for Atlan's customer support team.
+An intelligent AI-powered customer support system that provides automated assistance for Atlan-related queries with advanced classification, RAG (Retrieval Augmented Generation), and multi-channel support.
 
-## ✨ Key Features
+## 📋 Table of Contents
 
-### 🎯 **Smart Ticket Classification**
-- **AI-Powered**: Uses GPT-3.5-turbo to classify tickets into relevant topics
-- **Sentiment Analysis**: Detects customer emotions (Frustrated, Curious, Neutral, etc.)
-- **Priority Assessment**: Automatically assigns priority levels (P0, P1, P2)
-- **High Accuracy**: 85%+ classification confidence
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Screenshots](#-screenshots)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Installation & Setup](#-installation--setup)
+- [Environment Variables](#-environment-variables)
+- [API Documentation](#-api-documentation)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
+- [Scalability & Multi-Channel Integration](#-scalability--multi-channel-integration)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-### 🔍 **Intelligent Document Search**
-- **Vector Search**: Pinecone-powered semantic similarity search
-- **RAG System**: Retrieval Augmented Generation for accurate responses
-- **Smart Citations**: Technology-specific documentation URLs
-- **Multi-Language Support**: Python, Java, Kotlin, Scala, Go, and more
-- **Enhanced Content Extraction**: Full documentation content with detailed code examples
+## ✨ Features
 
-### 💬 **Interactive Chat Interface**
-- **Real-time Chat**: React-powered conversational interface
-- **Follow-up Suggestions**: AI-generated contextual questions
-- **Multi-channel Support**: Web Chat, WhatsApp, Email, Voice, Slack, Teams
-- **Channel Selector**: Dropdown to specify communication channel
-- **Session Management**: Persistent conversation history
-- **Code Snippet Rendering**: Beautiful syntax-highlighted code blocks with copy functionality
+### 🤖 AI-Powered Assistant
+- **Intelligent Query Classification**: Automatically categorizes queries into topics (API/SDK, Connector, SSO, How-to, Product, Best practices, Lineage, Glossary, Sensitive data, General)
+- **Sentiment Analysis**: Detects user sentiment (Urgent, Frustrated, Positive, Curious, Neutral)
+- **Priority Assessment**: Assigns priority levels (P0, P1, P2, P3) based on query content and sentiment
+- **RAG Integration**: Retrieval Augmented Generation for accurate, context-aware responses
+- **Intelligent URL Resolution**: Smart citation system that provides relevant documentation links
 
-### 📊 **Analytics Dashboard**
-- **Ticket Analytics**: Visualize distribution by topic, priority, sentiment
-- **Performance Metrics**: Response times, accuracy, engagement
-- **Search & Filter**: Multi-criteria filtering for ticket management
+### 📊 Classification Dashboard
+- **Real-time Analytics**: Live statistics on query volume, response times, and classification accuracy
+- **Advanced Filtering**: Filter tickets by topic, sentiment, priority, and date range
+- **Detailed Insights**: View classification reasoning and confidence scores
+- **Export Functionality**: Download filtered data for analysis
 
-## 🏗️ System Architecture
+### 🔄 Multi-Channel Support
+- **Web Chat**: Primary interface for direct user interaction
+- **WhatsApp**: Mobile messaging integration
+- **Email**: Email-based support tickets
+- **Voice**: Voice-to-text support
+- **Slack**: Team collaboration integration
+- **Microsoft Teams**: Enterprise communication platform
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Frontend│    │   FastAPI Backend│    │  Vector Store   │
-│                 │    │                 │    │                 │
-│ • Chat Interface│◄──►│ • RAG Service   │◄──►│ • Pinecone      │
-│ • Dashboard     │    │ • Classification│    │ • Dual Indices  │
-│ • Multi-channel │    │ • URL Resolver  │    │ • Embeddings    │
-│ • Channel Select│    │ • Improved Crawl│    │ • Enhanced Data │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Data Sources  │    │   OpenAI API    │    │   Web Crawler   │
-│                 │    │                 │    │                 │
-│ • Sample Tickets│    │ • GPT-3.5-turbo │    │ • Atlan Docs    │
-│ • JSON Data     │    │ • Embeddings    │    │ • Developer Docs│
-│ • Enhanced Data │    │ • Classification│    │ • Full Content  │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
+### 🎯 Smart Response System
+- **Context-Aware Answers**: Provides relevant, accurate responses based on Atlan documentation
+- **Code Snippets**: Copyable code examples with syntax highlighting
+- **Follow-up Suggestions**: Intelligent follow-up questions to guide users
+- **Citation System**: Links to official documentation sources
 
-## 🎯 Major Design Decisions and Trade-offs
+## 🏗️ Architecture
 
-### **AI Pipeline Design Decisions**
+### High-Level Design (HLD)
+![High-Level Design](images/HLD.png)
 
-#### **1. RAG (Retrieval Augmented Generation) Approach**
-- **Decision**: Implemented RAG instead of fine-tuning a model
-- **Rationale**: RAG allows for real-time updates to documentation without retraining
-- **Trade-off**: Slightly higher latency but better accuracy and maintainability
-- **Benefit**: Can easily update knowledge base by re-crawling documentation
+### Low-Level Design (LLD)
+![Low-Level Design](images/LLD.png)
 
-#### **2. Vector Database Choice: Pinecone**
-- **Decision**: Used Pinecone over alternatives like Chroma or FAISS
-- **Rationale**: Managed service with excellent performance and scalability
-- **Trade-off**: Higher cost but better reliability and performance
-- **Benefit**: No infrastructure management, automatic scaling
+### System Architecture
+![System Architecture](images/SYSTEM_architecture.png)
 
-#### **3. Embedding Model: OpenAI text-embedding-ada-002**
-- **Decision**: Used OpenAI embeddings over open-source alternatives
-- **Rationale**: Superior quality for technical documentation
-- **Trade-off**: API costs but better semantic understanding
-- **Benefit**: Better retrieval accuracy for technical content
+### Sequence Flow
+![Sequence Flow](images/sequence_diagram.png)
 
-#### **4. Classification Strategy: GPT-3.5-turbo**
-- **Decision**: Used GPT-3.5-turbo for classification instead of specialized models
-- **Rationale**: General-purpose model with good reasoning capabilities
-- **Trade-off**: Higher cost per request but better flexibility
-- **Benefit**: Can handle diverse ticket types without retraining
+## �� Screenshots
 
-#### **5. Content Extraction Strategy**
-- **Decision**: Implemented improved crawlers with full content extraction
-- **Rationale**: Better response quality with complete code examples
-- **Trade-off**: Larger storage requirements but better user experience
-- **Benefit**: Users get comprehensive answers with working code snippets
+### AI Assistant Interface
+![AI Assistant](images/AI_assistant.png)
 
-### **System Architecture Trade-offs**
+### Classification Dashboard
+![Dashboard](images/Dasboard.png)
 
-#### **1. Frontend Framework: React + Vite**
-- **Decision**: React over Vue.js or Angular
-- **Rationale**: Better ecosystem for AI applications and component libraries
-- **Trade-off**: Larger bundle size but better developer experience
-- **Benefit**: Rich ecosystem, excellent TypeScript support
+### Classification Details
+![Classification](images/Classification1.png)
 
-#### **2. Backend Framework: FastAPI**
-- **Decision**: FastAPI over Flask or Django
-- **Rationale**: Better performance, automatic API documentation, async support
-- **Trade-off**: Learning curve but better scalability
-- **Benefit**: Built-in validation, automatic OpenAPI docs, async capabilities
+### Reasoning Display
+![Reasoning](images/Reasoning.png)
 
-#### **3. Database Strategy: Vector + JSON**
-- **Decision**: Pinecone for vectors, JSON files for metadata
-- **Rationale**: Optimized for each use case
-- **Trade-off**: Multiple data stores but better performance
-- **Benefit**: Fast vector search + flexible metadata storage
+## 🛠️ Technology Stack
+
+### Backend
+- **FastAPI**: Modern, fast web framework for building APIs
+- **Python 3.12+**: Core programming language
+- **OpenAI GPT-3.5-turbo**: AI classification and response generation
+- **Pinecone**: Vector database for semantic search
+- **Pydantic**: Data validation and serialization
+- **Uvicorn**: ASGI server for production deployment
+
+### Frontend
+- **React 18**: Modern UI library with hooks
+- **TypeScript**: Type-safe JavaScript development
+- **Tailwind CSS**: Utility-first CSS framework
+- **React Markdown**: Markdown rendering with syntax highlighting
+- **React Syntax Highlighter**: Code snippet highlighting
+- **Vite**: Fast build tool and development server
+
+### Infrastructure
+- **Vercel**: Frontend deployment platform
+- **Render**: Backend deployment platform
+- **Git**: Version control and collaboration
 
 ## 📁 Project Structure
 
 ```
 agent-vue-assist/
-├── frontend/                 # React frontend application
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   │   ├── InteractiveAgent.tsx  # Main chat interface with channel selector
-│   │   │   ├── BulkDashboard.tsx     # Analytics dashboard
-│   │   │   └── ui/          # Shadcn/ui components
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── lib/             # Utilities and API client
-│   │   ├── pages/           # Page components
-│   │   └── types/           # TypeScript definitions
-│   ├── package.json         # Frontend dependencies
-│   └── vite.config.ts       # Vite configuration
-├── backend/                 # FastAPI backend application
-│   ├── controllers/         # API route handlers
-│   │   └── rag_controller.py # RAG query endpoint
-│   ├── services/            # Business logic
+├── backend/                    # FastAPI backend
+│   ├── controllers/           # API route handlers
+│   │   ├── rag_controller.py  # RAG query handling
+│   │   └── tickets_controller.py # Ticket management
+│   ├── services/              # Business logic
 │   │   ├── atlan_rag_service.py # RAG implementation
 │   │   ├── classification_service.py # AI classification
 │   │   ├── crawled_data_url_resolver.py # URL resolution
-│   │   ├── improved_atlan_docs_crawler.py # Enhanced content extraction
-│   │   └── improved_atlan_rag_crawler.py # Enhanced RAG crawling
-│   ├── scripts/             # Utility scripts
-│   │   └── improve_crawling.py # Script to update documentation data
-│   ├── config/              # Configuration files
-│   ├── data/                # Data files and samples
-│   ├── app.py               # FastAPI application entry point
-│   └── requirements.txt     # Python dependencies
-├── README.md                # This documentation
-├── API_DOCUMENTATION.md     # Detailed API documentation
-└── .gitignore              # Git ignore rules
+│   │   ├── vector_db_service.py # Pinecone integration
+│   │   └── embedding_service.py # Text embedding
+│   ├── config/                # Configuration
+│   │   └── settings.py        # Environment settings
+│   ├── tests/                 # Backend tests
+│   │   └── test_simple.py     # Unit tests
+│   ├── scripts/               # Utility scripts
+│   ├── app.py                 # FastAPI application
+│   └── requirements.txt       # Python dependencies
+├── frontend/                  # React frontend
+│   ├── src/
+│   │   ├── components/        # React components
+│   │   │   ├── InteractiveAgent.tsx # Main chat interface
+│   │   │   └── BulkDashboard.tsx # Classification dashboard
+│   │   ├── lib/               # Utilities
+│   │   │   └── api.ts         # API service
+│   │   ├── types/             # TypeScript types
+│   │   │   └── api.ts         # API type definitions
+│   │   ├── __tests__/         # Frontend tests
+│   │   │   └── simple.test.ts # Unit tests
+│   │   └── App.tsx            # Main application
+│   ├── package.json           # Node.js dependencies
+│   └── vite.config.ts         # Vite configuration
+├── images/                    # Architecture diagrams
+│   ├── HLD.png               # High-Level Design
+│   ├── LLD.png               # Low-Level Design
+│   ├── SYSTEM_architecture.png # System Architecture
+│   ├── sequence_diagram.png   # Sequence Flow
+│   ├── AI_assistant.png      # AI Assistant Screenshot
+│   ├── Dasboard.png          # Dashboard Screenshot
+│   ├── Classification1.png   # Classification Screenshot
+│   └── Reasoning.png         # Reasoning Screenshot
+├── run_tests.sh              # Test runner script
+├── README.md                 # This file
+└── API_DOCUMENTATION.md      # API documentation
 ```
 
-## 🚀 Quick Start Guide
+## 🚀 Installation & Setup
 
 ### Prerequisites
-- **Node.js** 18+ and npm
-- **Python** 3.8+
-- **OpenAI API Key** (for GPT models)
-- **Pinecone API Key** (for vector search)
+- Python 3.12+
+- Node.js 18+
+- OpenAI API key
+- Pinecone API key
 
-### 1. Frontend Setup
+### Backend Setup
 ```bash
-# Navigate to frontend directory
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-Frontend will be available at: http://localhost:3000
-
-### 2. Backend Setup
-```bash
-# Navigate to backend directory
 cd backend
-
-# Create virtual environment
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Set environment variables
-export OPENAI_API_KEY="your-openai-api-key"
-export PINECONE_API_KEY="your-pinecone-api-key"
-export PINECONE_ENVIRONMENT="your-pinecone-environment"
-
-# Start the server
-uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
-Backend will be available at: http://localhost:8000
 
-### 3. Enhanced Data Setup (Optional)
-To get detailed SDK documentation with code examples:
+### Frontend Setup
 ```bash
-cd backend
-python scripts/improve_crawling.py
+cd frontend
+npm install --legacy-peer-deps
 ```
 
-## 🌐 Production Deployment
+### Running the Application
+```bash
+# Terminal 1: Backend
+cd backend
+source .venv/bin/activate
+uvicorn app:app --reload --host 0.0.0.0 --port 8000
 
-### Frontend Deployment (Vercel)
-1. **Connect Repository**: Link your GitHub repo to Vercel
-2. **Build Settings**:
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-   - Root Directory: `frontend`
-3. **Environment Variables**: Add `VITE_API_BASE_URL` in Vercel dashboard
-
-### Backend Deployment (Render)
-1. **Connect Repository**: Link your GitHub repo to Render
-2. **Build Settings**:
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `uvicorn app:app --host 0.0.0.0 --port $PORT`
-   - Root Directory: `backend`
-3. **Environment Variables**: Add all required API keys in Render dashboard
+# Terminal 2: Frontend
+cd frontend
+npm run dev
+```
 
 ## 🔧 Environment Variables
 
-### Frontend (.env)
-```env
-VITE_API_BASE_URL=https://your-backend-url.onrender.com
-```
-
 ### Backend (.env)
 ```env
-OPENAI_API_KEY=your-openai-api-key
-PINECONE_API_KEY=your-pinecone-api-key
-PINECONE_ENVIRONMENT=your-pinecone-environment
-PINECONE_INDEX_NAME=atlan-docs-rag
+OPENAI_API_KEY=your_openai_api_key_here
+PINECONE_API_KEY=your_pinecone_api_key_here
+PINECONE_ENVIRONMENT=your_pinecone_environment_here
+PINECONE_TICKETS_INDEX=atlan-tickets
+PINECONE_DOCS_INDEX=atlan-docs
 ```
 
-## 📊 API Documentation
+### Frontend (.env)
+```env
+VITE_API_BASE_URL=http://localhost:8000
+```
 
-### Main Endpoints
+## 📚 API Documentation
+
+### Core Endpoints
 
 #### RAG Query
 ```http
@@ -236,178 +207,233 @@ POST /api/rag/query
 Content-Type: application/json
 
 {
-  "query": "How do I install the Kotlin SDK?",
-  "session_id": "user-session-123",
+  "query": "How do I install the Python SDK?",
   "channel": "Web Chat",
+  "session_id": "user-session-123",
   "include_followup": true
 }
 ```
 
-**Response:**
+#### Ticket Management
+```http
+GET /api/tickets/
+POST /api/tickets/
+GET /api/tickets/{ticket_id}
+```
+
+#### Classification
+```http
+POST /api/tickets/classify
+Content-Type: application/json
+
+{
+  "content": "User query text",
+  "subject": "Query subject"
+}
+```
+
+### Response Format
 ```json
 {
-  "answer": "To install the Kotlin SDK...",
+  "answer": "Detailed response with code examples",
   "citations": [
     {
-      "url": "https://developer.atlan.com/sdks/kotlin/",
-      "doc": "Kotlin SDK Documentation"
+      "url": "https://developer.atlan.com/sdks/python/",
+      "doc": "Python SDK Documentation"
     }
   ],
   "classification": {
     "topic": "API/SDK",
     "sentiment": "Neutral",
     "priority": "P2",
-    "confidence": 0.85
+    "confidence": 0.9
   },
-  "followup_suggestions": [...],
-  "processing_time": 1.2
+  "classification_reasons": {
+    "topic_reasoning": "SDK related query",
+    "sentiment_reasoning": "Neutral tone",
+    "priority_reasoning": "Standard priority"
+  },
+  "followup_suggestions": [
+    {"question": "How do I authenticate with the SDK?"}
+  ],
+  "processing_time": 1.2,
+  "session_id": "user-session-123",
+  "response_type": "rag_response"
 }
 ```
 
-#### Health Check
-```http
-GET /health
-```
-
-#### Ticket Management
-```http
-GET /api/tickets/          # Get all tickets
-POST /api/tickets/         # Create new ticket
-GET /api/tickets/classify  # Classify ticket
-GET /api/tickets/sample    # Get sample tickets
-```
-
-## 🤖 AI Features Explained
-
-### Ticket Classification System
-- **Topics**: API/SDK, Connector, SSO, How-to, Product, Best practices, Lineage, Glossary, Sensitive data, General
-- **Sentiment**: Urgent, Frustrated, Positive, Curious, Neutral
-- **Priority**: P0 (Critical), P1 (High), P2 (Medium), P3 (Low)
-
-### RAG (Retrieval Augmented Generation)
-1. **Query Processing**: User question is analyzed and classified
-2. **Vector Search**: Relevant documentation chunks are retrieved from Pinecone
-3. **Context Building**: Retrieved chunks are combined with the query
-4. **Response Generation**: GPT-3.5-turbo generates contextual response
-5. **Citation**: Relevant documentation URLs are provided
-
-### Enhanced Content Extraction
-- **Full Documentation Content**: No content truncation, extracts complete pages
-- **Code Block Preservation**: Specifically extracts and preserves code examples
-- **Larger Chunk Sizes**: 2000 characters for better context retention
-- **Technology-Specific Targeting**: Prioritizes SDK and developer documentation
-- **Improved Content Selectors**: Better detection of documentation content
-
-### Intelligent URL Resolution
-- **Technology Detection**: Automatically identifies programming languages/SDKs
-- **Relevance Scoring**: Ranks documentation URLs by relevance
-- **Deduplication**: Removes duplicate citations
-- **Fallback URLs**: Provides technology-specific documentation when available
-
-### Multi-Channel Support
-- **Channel Selection**: Users can specify communication channel (Web Chat, WhatsApp, Email, Voice, Slack, Teams)
-- **Contextual Responses**: AI adapts responses based on selected channel
-- **Ticket Classification**: Channel information used for better ticket routing
-- **User Experience**: Clear visual indicators of selected channel
-
 ## 🧪 Testing
 
-### Frontend Testing
+### Backend Tests (Python + pytest)
+```bash
+cd backend
+source .venv/bin/activate
+python -m pytest tests/test_simple.py -v
+```
+
+**Test Coverage:**
+- ✅ Basic functionality and data structures
+- ✅ Technology extraction logic (Python, Java, Kotlin, Scala, Go, JavaScript)
+- ✅ URL validation and SDK detection
+- ✅ Classification logic for topics, sentiment, and priority
+- ✅ RAG response structure validation
+- ✅ Ticket classification structure validation
+- ✅ Error handling and edge cases
+- ✅ Async functionality testing
+
+### Frontend Tests (React + Vitest)
 ```bash
 cd frontend
-npm run test
-npm run test:coverage
+npm run test:run
 ```
 
-### Backend Testing
+**Test Coverage:**
+- ✅ API request/response structure validation
+- ✅ Ticket data structure validation
+- ✅ Channel options validation
+- ✅ Topic classification options
+- ✅ Sentiment and priority options
+- ✅ URL structure validation
+- ✅ Confidence score validation
+- ✅ Processing time validation
+- ✅ Response type validation
+
+### Run All Tests
 ```bash
-cd backend
-python -m pytest
-python -m pytest --cov=.
+./run_tests.sh
 ```
 
-## 📈 Performance Metrics
+**Test Results:**
+- **Backend**: 14 tests passed ✅
+- **Frontend**: 11 tests passed ✅
+- **Total**: 25 tests passed ✅
 
-- **Response Time**: < 2 seconds for RAG queries
-- **Classification Accuracy**: 85%+ confidence
-- **Scalability**: Handles 100+ concurrent users
-- **Uptime**: 99.9% availability target
-- **Vector Search**: Sub-second retrieval from Pinecone
-- **Content Quality**: Full documentation content with detailed code examples
+### Test Features
+- **Unit Testing**: Core business logic validation
+- **Structure Validation**: API request/response formats
+- **Edge Case Testing**: Error handling and boundary conditions
+- **Data Validation**: Classification and processing logic
+- **Mock Testing**: External dependencies properly mocked
+- **Async Testing**: Proper async/await functionality testing
 
-## 🔒 Security Features
+## 🚀 Deployment
 
-- **API Authentication**: Secure API key management
-- **CORS Configuration**: Proper cross-origin resource sharing
-- **Input Validation**: Sanitization of user inputs
-- **Rate Limiting**: Protection against abuse
-- **Environment Variables**: Secure credential handling
+### Frontend (Vercel)
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
 
-## 🛠️ Development
+### Backend (Render)
+1. Connect your GitHub repository to Render
+2. Set environment variables in Render dashboard
+3. Deploy automatically on push to main branch
 
-### Adding New Features
-1. **Frontend**: Add components in `frontend/src/components/`
-2. **Backend**: Add services in `backend/services/` and controllers in `backend/controllers/`
-3. **API**: Update API documentation in `API_DOCUMENTATION.md`
+### Environment Variables for Production
+```env
+# Backend
+OPENAI_API_KEY=your_production_openai_key
+PINECONE_API_KEY=your_production_pinecone_key
+PINECONE_ENVIRONMENT=your_production_environment
 
-### Code Style
-- **Frontend**: TypeScript, ESLint, Prettier
-- **Backend**: Python, Black formatter, type hints
-- **Commits**: Conventional commit messages
-
-### Improving Documentation Data
-To update the crawled documentation with enhanced content:
-```bash
-cd backend
-python scripts/improve_crawling.py
+# Frontend
+VITE_API_BASE_URL=https://your-backend-url.onrender.com
 ```
 
-This will:
-- Extract full content from Atlan documentation
-- Preserve code blocks and examples
-- Update Pinecone with enhanced data
-- Improve response quality for SDK queries
+## 📈 Scalability & Multi-Channel Integration
+
+### Scalability Features
+- **Microservices Architecture**: Modular design for easy scaling
+- **Vector Database**: Pinecone for efficient semantic search
+- **Async Processing**: Non-blocking operations for better performance
+- **Caching Strategy**: Intelligent caching for frequently asked questions
+- **Load Balancing**: Ready for horizontal scaling
+
+### Multi-Channel API Integration
+The system is designed to integrate with multiple communication channels through APIs:
+
+#### Web Chat Integration
+```javascript
+// Direct API integration
+const response = await fetch('/api/rag/query', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    query: userMessage,
+    channel: 'Web Chat',
+    session_id: sessionId
+  })
+});
+```
+
+#### WhatsApp Integration
+```javascript
+// WhatsApp Business API integration
+const whatsappResponse = await fetch('/api/rag/query', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    query: whatsappMessage,
+    channel: 'WhatsApp',
+    session_id: whatsappSessionId
+  })
+});
+```
+
+#### Slack Integration
+```javascript
+// Slack Bot API integration
+const slackResponse = await fetch('/api/rag/query', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    query: slackMessage,
+    channel: 'Slack',
+    session_id: slackChannelId
+  })
+});
+```
+
+#### Email Integration
+```javascript
+// Email processing integration
+const emailResponse = await fetch('/api/rag/query', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    query: emailContent,
+    channel: 'Email',
+    session_id: emailThreadId
+  })
+});
+```
+
+### Channel-Specific Features
+- **Session Management**: Persistent sessions across channels
+- **Context Preservation**: Maintains conversation context
+- **Channel-Specific Formatting**: Optimized responses for each channel
+- **Rate Limiting**: Channel-specific rate limiting
+- **Analytics**: Channel-specific usage analytics
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and add tests
-4. Commit with conventional format: `git commit -m "feat: add amazing feature"`
-5. Push to your branch: `git push origin feature/amazing-feature`
-6. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📝 License
+## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support & Troubleshooting
+## 🙏 Acknowledgments
 
-### Common Issues
-- **CORS Errors**: Ensure backend CORS is configured for your frontend URL
-- **API Key Issues**: Verify all environment variables are set correctly
-- **Pinecone Connection**: Check Pinecone API key and environment settings
-- **Content Quality**: Run the improved crawler to get detailed documentation
-
-### Getting Help
-- **GitHub Issues**: Create an issue for bugs or feature requests
-- **Documentation**: Check `API_DOCUMENTATION.md` for detailed API specs
-- **Team Contact**: Reach out to the development team
-
-## 🚀 Getting Started Checklist
-
-- [ ] Clone the repository
-- [ ] Set up environment variables (OpenAI, Pinecone)
-- [ ] Install frontend dependencies (`npm install`)
-- [ ] Install backend dependencies (`pip install -r requirements.txt`)
-- [ ] Start backend server (`uvicorn app:app --reload`)
-- [ ] Start frontend server (`npm run dev`)
-- [ ] Open http://localhost:3000
-- [ ] Test with a sample query: "How do I install the Python SDK?"
-- [ ] (Optional) Run improved crawler for enhanced content: `python scripts/improve_crawling.py`
+- **Atlan**: For providing comprehensive documentation
+- **OpenAI**: For powerful AI capabilities
+- **Pinecone**: For vector database services
+- **FastAPI**: For the excellent web framework
+- **React**: For the modern UI library
 
 ---
 
-**Built with ❤️ for Atlan Customer Support Team**
-
-*This AI copilot helps support teams provide faster, more accurate responses to customer inquiries by leveraging the power of AI, vector search, and intelligent document retrieval with enhanced content extraction and multi-channel support.*
+**Built with ❤️ for the Atlan Customer Support Team**
