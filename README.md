@@ -15,12 +15,15 @@ An intelligent AI-powered customer support system that provides automated ticket
 - **RAG System**: Retrieval Augmented Generation for accurate responses
 - **Smart Citations**: Technology-specific documentation URLs
 - **Multi-Language Support**: Python, Java, Kotlin, Scala, Go, and more
+- **Enhanced Content Extraction**: Full documentation content with detailed code examples
 
 ### 💬 **Interactive Chat Interface**
-- **Real-time Chat**: Vue.js powered conversational interface
+- **Real-time Chat**: React-powered conversational interface
 - **Follow-up Suggestions**: AI-generated contextual questions
 - **Multi-channel Support**: Web Chat, WhatsApp, Email, Voice, Slack, Teams
+- **Channel Selector**: Dropdown to specify communication channel
 - **Session Management**: Persistent conversation history
+- **Code Snippet Rendering**: Beautiful syntax-highlighted code blocks with copy functionality
 
 ### 📊 **Analytics Dashboard**
 - **Ticket Analytics**: Visualize distribution by topic, priority, sentiment
@@ -31,11 +34,12 @@ An intelligent AI-powered customer support system that provides automated ticket
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Vue.js Frontend│    │   FastAPI Backend│    │  Vector Store   │
+│   React Frontend│    │   FastAPI Backend│    │  Vector Store   │
 │                 │    │                 │    │                 │
 │ • Chat Interface│◄──►│ • RAG Service   │◄──►│ • Pinecone      │
 │ • Dashboard     │    │ • Classification│    │ • Dual Indices  │
 │ • Multi-channel │    │ • URL Resolver  │    │ • Embeddings    │
+│ • Channel Select│    │ • Improved Crawl│    │ • Enhanced Data │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          │                       │                       │
@@ -45,6 +49,7 @@ An intelligent AI-powered customer support system that provides automated ticket
 │                 │    │                 │    │                 │
 │ • Sample Tickets│    │ • GPT-3.5-turbo │    │ • Atlan Docs    │
 │ • JSON Data     │    │ • Embeddings    │    │ • Developer Docs│
+│ • Enhanced Data │    │ • Classification│    │ • Full Content  │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -52,10 +57,10 @@ An intelligent AI-powered customer support system that provides automated ticket
 
 ```
 agent-vue-assist/
-├── frontend/                 # Vue.js frontend application
+├── frontend/                 # React frontend application
 │   ├── src/
 │   │   ├── components/      # React components
-│   │   │   ├── InteractiveAgent.tsx  # Main chat interface
+│   │   │   ├── InteractiveAgent.tsx  # Main chat interface with channel selector
 │   │   │   ├── BulkDashboard.tsx     # Analytics dashboard
 │   │   │   └── ui/          # Shadcn/ui components
 │   │   ├── hooks/           # Custom React hooks
@@ -70,12 +75,17 @@ agent-vue-assist/
 │   ├── services/            # Business logic
 │   │   ├── atlan_rag_service.py # RAG implementation
 │   │   ├── classification_service.py # AI classification
-│   │   └── crawled_data_url_resolver.py # URL resolution
+│   │   ├── crawled_data_url_resolver.py # URL resolution
+│   │   ├── improved_atlan_docs_crawler.py # Enhanced content extraction
+│   │   └── improved_atlan_rag_crawler.py # Enhanced RAG crawling
+│   ├── scripts/             # Utility scripts
+│   │   └── improve_crawling.py # Script to update documentation data
 │   ├── config/              # Configuration files
 │   ├── data/                # Data files and samples
 │   ├── app.py               # FastAPI application entry point
 │   └── requirements.txt     # Python dependencies
 ├── README.md                # This documentation
+├── API_DOCUMENTATION.md     # Detailed API documentation
 └── .gitignore              # Git ignore rules
 ```
 
@@ -121,6 +131,13 @@ export PINECONE_ENVIRONMENT="your-pinecone-environment"
 uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
 Backend will be available at: http://localhost:8000
+
+### 3. Enhanced Data Setup (Optional)
+To get detailed SDK documentation with code examples:
+```bash
+cd backend
+python scripts/improve_crawling.py
+```
 
 ## 🌐 Production Deployment
 
@@ -220,11 +237,24 @@ GET /api/tickets/sample    # Get sample tickets
 4. **Response Generation**: GPT-3.5-turbo generates contextual response
 5. **Citation**: Relevant documentation URLs are provided
 
+### Enhanced Content Extraction
+- **Full Documentation Content**: No content truncation, extracts complete pages
+- **Code Block Preservation**: Specifically extracts and preserves code examples
+- **Larger Chunk Sizes**: 2000 characters for better context retention
+- **Technology-Specific Targeting**: Prioritizes SDK and developer documentation
+- **Improved Content Selectors**: Better detection of documentation content
+
 ### Intelligent URL Resolution
 - **Technology Detection**: Automatically identifies programming languages/SDKs
 - **Relevance Scoring**: Ranks documentation URLs by relevance
 - **Deduplication**: Removes duplicate citations
 - **Fallback URLs**: Provides technology-specific documentation when available
+
+### Multi-Channel Support
+- **Channel Selection**: Users can specify communication channel (Web Chat, WhatsApp, Email, Voice, Slack, Teams)
+- **Contextual Responses**: AI adapts responses based on selected channel
+- **Ticket Classification**: Channel information used for better ticket routing
+- **User Experience**: Clear visual indicators of selected channel
 
 ## 🧪 Testing
 
@@ -249,6 +279,7 @@ python -m pytest --cov=.
 - **Scalability**: Handles 100+ concurrent users
 - **Uptime**: 99.9% availability target
 - **Vector Search**: Sub-second retrieval from Pinecone
+- **Content Quality**: Full documentation content with detailed code examples
 
 ## 🔒 Security Features
 
@@ -270,6 +301,19 @@ python -m pytest --cov=.
 - **Backend**: Python, Black formatter, type hints
 - **Commits**: Conventional commit messages
 
+### Improving Documentation Data
+To update the crawled documentation with enhanced content:
+```bash
+cd backend
+python scripts/improve_crawling.py
+```
+
+This will:
+- Extract full content from Atlan documentation
+- Preserve code blocks and examples
+- Update Pinecone with enhanced data
+- Improve response quality for SDK queries
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -289,13 +333,14 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **CORS Errors**: Ensure backend CORS is configured for your frontend URL
 - **API Key Issues**: Verify all environment variables are set correctly
 - **Pinecone Connection**: Check Pinecone API key and environment settings
+- **Content Quality**: Run the improved crawler to get detailed documentation
 
 ### Getting Help
 - **GitHub Issues**: Create an issue for bugs or feature requests
 - **Documentation**: Check `API_DOCUMENTATION.md` for detailed API specs
 - **Team Contact**: Reach out to the development team
 
-## 🚀 Getting Started Checklist
+## �� Getting Started Checklist
 
 - [ ] Clone the repository
 - [ ] Set up environment variables (OpenAI, Pinecone)
@@ -305,9 +350,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [ ] Start frontend server (`npm run dev`)
 - [ ] Open http://localhost:3000
 - [ ] Test with a sample query: "How do I install the Python SDK?"
+- [ ] (Optional) Run improved crawler for enhanced content: `python scripts/improve_crawling.py`
 
 ---
 
 **Built with ❤️ for Atlan Customer Support Team**
 
-*This AI copilot helps support teams provide faster, more accurate responses to customer inquiries by leveraging the power of AI, vector search, and intelligent document retrieval.*
+*This AI copilot helps support teams provide faster, more accurate responses to customer inquiries by leveraging the power of AI, vector search, and intelligent document retrieval with enhanced content extraction and multi-channel support.*

@@ -1,7 +1,7 @@
 # Atlan Customer Support Copilot API Documentation
 
 ## Overview
-The Atlan Customer Support Copilot API provides AI-powered customer support assistance with intelligent query classification, RAG (Retrieval Augmented Generation), and ticket management capabilities.
+The Atlan Customer Support Copilot API provides AI-powered customer support assistance with intelligent query classification, RAG (Retrieval Augmented Generation), enhanced content extraction, and ticket management capabilities.
 
 ## Base URL
 ```
@@ -18,7 +18,7 @@ Currently no authentication required for development.
 ### 1. RAG Query
 **POST** `/api/rag/query`
 
-Submit a customer query and receive an AI-powered response with classification reasoning and intelligent citations.
+Submit a customer query and receive an AI-powered response with classification reasoning and intelligent citations. Enhanced with improved content extraction for detailed SDK documentation.
 
 #### Request Body
 ```json
@@ -77,7 +77,7 @@ Submit a customer query and receive an AI-powered response with classification r
 #### Response Fields
 | Field | Type | Description |
 |-------|------|-------------|
-| `answer` | string | AI-generated response to the query |
+| `answer` | string | AI-generated response to the query with detailed code examples |
 | `citations` | array | Sources and documentation links |
 | `classification` | object | Query classification details with reasoning |
 | `classification_reasons` | object | Reasoning behind classification decisions |
@@ -128,7 +128,7 @@ curl -X POST "http://localhost:8000/api/rag/query" \
 #### Example Response
 ```json
 {
-  "answer": "To install the Python SDK for Atlan, you can follow these steps:\n\n1. Install using pip:\n   ```\n   pip install pyatlan\n   ```\n\n2. Configure with environment variables:\n   - ATLAN_API_KEY: Your API token\n   - ATLAN_BASE_URL: Your Atlan URL\n\n3. Basic usage:\n   ```python\n   from pyatlan.atlan import AtlanClient\n   client = AtlanClient()\n   ```",
+  "answer": "To install the Python SDK for Atlan, you can follow these steps:\n\n1. Install using pip:\n   ```bash\n   pip install pyatlan\n   ```\n\n2. Configure with environment variables:\n   ```bash\n   export ATLAN_API_KEY=\"your-api-key\"\n   export ATLAN_BASE_URL=\"https://tenant.atlan.com\"\n   ```\n\n3. Basic usage with AsyncAtlanClient:\n   ```python\n   import asyncio\n   from pyatlan.client.aio import AsyncAtlanClient\n   \n   client = AsyncAtlanClient(\n       base_url=\"https://tenant.atlan.com\",\n       api_key=\"your-api-key\"\n   )\n   \n   async def search_tables():\n       results = await client.asset.search(\n           criteria=FluentSearch()\n           .where(Term.with_state(\"ACTIVE\"))\n           .where(Asset.TYPE_NAME.eq(\"Table\"))\n           .to_request(),\n       )\n       return results.count\n   \n   total_count = asyncio.run(search_tables())\n   ```",
   "citations": [
     {
       "doc": "Python SDK Documentation",
@@ -316,6 +316,13 @@ The system uses RAG to provide accurate, contextual responses by:
 4. **Response Generation**: Using GPT-3.5-turbo for intelligent responses
 5. **Citation**: Providing relevant documentation URLs
 
+### Enhanced Content Extraction
+- **Full Documentation Content**: No content truncation, extracts complete pages
+- **Code Block Preservation**: Specifically extracts and preserves code examples
+- **Larger Chunk Sizes**: 2000 characters for better context retention
+- **Technology-Specific Targeting**: Prioritizes SDK and developer documentation
+- **Improved Content Selectors**: Better detection of documentation content
+
 ### Intelligent URL Resolution
 - **Technology Detection**: Automatically identifies programming languages/SDKs
 - **Relevance Scoring**: Ranks documentation URLs by relevance
@@ -323,13 +330,10 @@ The system uses RAG to provide accurate, contextual responses by:
 - **Fallback URLs**: Provides technology-specific documentation
 
 ### Multi-Channel Support
-Supports various communication channels:
-- Web Chat
-- WhatsApp
-- Email
-- Voice
-- Slack
-- Microsoft Teams
+- **Channel Selection**: Users can specify communication channel
+- **Supported Channels**: Web Chat, WhatsApp, Email, Voice, Slack, Microsoft Teams
+- **Contextual Responses**: AI adapts responses based on selected channel
+- **Ticket Classification**: Channel information used for better ticket routing
 
 ### Classification Reasoning
 The API provides detailed reasoning for classification decisions:
@@ -383,6 +387,30 @@ PINECONE_API_KEY=your-pinecone-api-key
 PINECONE_ENVIRONMENT=your-pinecone-environment
 PINECONE_INDEX_NAME=atlan-docs-rag
 ```
+
+---
+
+## Data Enhancement
+
+### Improving Documentation Content
+To get detailed SDK documentation with code examples, run the improved crawler:
+
+```bash
+cd backend
+python scripts/improve_crawling.py
+```
+
+This will:
+- Extract full content from Atlan documentation
+- Preserve code blocks and examples
+- Update Pinecone with enhanced data
+- Improve response quality for SDK queries
+
+### Enhanced Features
+- **Detailed Code Examples**: Full installation commands, configuration examples
+- **Advanced SDK Features**: AsyncAtlanClient, concurrent operations, error handling
+- **Complete Documentation**: No truncated content, full page extraction
+- **Better Context**: Larger chunks for improved understanding
 
 ---
 
