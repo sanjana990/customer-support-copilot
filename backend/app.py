@@ -46,4 +46,18 @@ async def initialize_data():
     logger.info("🔧 Initializing data...")
     from controllers.tickets_controller import classify_tickets
     return await classify_tickets()
-# Force deployment update
+
+# Add missing endpoints that frontend expects
+@app.get("/tickets")
+async def get_tickets_endpoint():
+    """Get tickets endpoint for frontend"""
+    from controllers.tickets_controller import get_tickets
+    return await get_tickets()
+
+@app.post("/query")
+async def submit_query(data: dict):
+    """Submit query endpoint for frontend"""
+    from controllers.rag_controller import query_rag, QueryRequest
+    # Convert dict to QueryRequest
+    query_request = QueryRequest(**data)
+    return await query_rag(query_request)
