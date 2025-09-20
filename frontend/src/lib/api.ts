@@ -49,5 +49,18 @@ export const apiService = {
     } catch (error) {
       throw new Error(`Query submission failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+  },
+
+  // Get tickets endpoint
+  async getTickets() {
+    try {
+      const response = await fetch(`${this.baseURL}/tickets`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      throw new Error(`Failed to fetch tickets: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 };
