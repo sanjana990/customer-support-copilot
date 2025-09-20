@@ -5,13 +5,9 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: [
-      {
-        find: '@',
-        replacement: path.resolve(process.cwd(), './src'),
-      },
-    ],
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
   },
   build: {
     outDir: 'dist',
