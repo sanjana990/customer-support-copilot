@@ -1,4 +1,4 @@
-# 🚀 Atlan Customer Support Copilot
+# 🚀Customer Support Copilot
 
 An intelligent AI-powered customer support system that provides automated assistance for Atlan-related queries with advanced classification, RAG (Retrieval Augmented Generation), and multi-channel support.
 
